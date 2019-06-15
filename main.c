@@ -6,13 +6,16 @@
 #include <zconf.h>
 #include <stdlib.h>
 
+#include "server-mock/server.h"
+
 #define HOST  "cube.testserver.mail.ru\0"
 #define PORT  4995
 #define TOKEN "abracadabra\0"
 #define SCOPE "test\0"
 
 int main() {
-    int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Дескриптор сокета
+    listenAndServe(5000, 4096, 10);
+    /*int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Дескриптор сокета
     if (sock < 0) {
         printf("Error: unable to create new socket\n");
         return 1;
@@ -50,5 +53,5 @@ int main() {
             return 0;
         }
         write(1, buf, (size_t)bytes);
-    }
+    }*/
 }

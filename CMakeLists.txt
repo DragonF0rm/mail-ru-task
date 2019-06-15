@@ -3,4 +3,4 @@ project(Cube C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Cube main.c)
+add_executable(Cube main.c server-mock/server.c server-mock/server.h)
