@@ -4,7 +4,6 @@
 #include <zconf.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "server.h"
 
 #define EXIT_SUCCESS    0
 #define EXIT_SOCK_ERR   1
@@ -53,4 +52,9 @@ int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
     }
 
     return EXIT_SUCCESS;
+}
+
+int main() {
+    listenAndServe(5000, 4096, 10);
+    return 0;
 }
