@@ -9,4 +9,4 @@ add_executable(Cube main.c)
 
 enable_testing()
 
-add_subdirectory(test)
+add_subdirectory(server-mock)

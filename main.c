@@ -7,28 +7,21 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 
-#define HOST  "localhost\0"
-#define PORT  5000
-#define TOKEN "abracadabra\0"
-#define SCOPE "test\0"
 #define BUF_SIZE 4096
 
-int createSocket(int *sock) {
+int createSocket(const char* host, const uint16_t port,  int *sock) {
     *sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Дескриптор сокета
     if (*sock < 0) {
         return 1;
     }
 
-    struct hostent* hostInfo = gethostbyname(HOST); //Получаем IP и прочую информацию о сервре
-    if (!hostInfo) {
-        return 2;
-    }
+    //TODO get ip by hostname
 
     struct sockaddr_in serverInfo; //Адрес сервера, к которому будем подключаться
     memset(&serverInfo, 0, sizeof(serverInfo));
     serverInfo.sin_family = AF_INET;
-    serverInfo.sin_port   = htons(PORT);
-    int result = inet_aton("127.0.0.1", &serverInfo.sin_addr);
+    serverInfo.sin_port   = htons(port);
+    int result = inet_aton(host, &serverInfo.sin_addr);
     if (result == 0) {
         return 3;
     }
@@ -41,23 +34,50 @@ int createSocket(int *sock) {
     return 0;
 }
 
-int main() {
-    int socket = 0;
-    int resultCode = createSocket(&socket);
-    if (resultCode != 0) {
-        printf("Error: unable to create socket, createSocket function finished with code %d\n", resultCode);
+char* buildRequest(const char* token, const char* scope, char* request) {
+    //TODO develop
+    *request = '\0';
+    request = strcat(request, token);
+    request = strcat(request, scope);
+    return request;
+}
+
+void printResponse(const char* response) {
+    //TODO develop
+    printf("%s\n", response);
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 5) {
+        printf("Error: wrong number of arguments");
+        printf("Program should be called like: cube <hostname> <port> <token> <scope>");
         return 1;
     }
+    char*    host  = argv[1];
+    uint16_t port  = (uint16_t)atoi(argv[2]);
+    char*    token = argv[3];
+    char*    scope = argv[4];
 
-    write(socket, TOKEN, strlen(TOKEN) +1);
-    while(1) {
-        char buf[BUF_SIZE];
-        ssize_t bytes = read(socket, buf, 5000);
-        if (bytes <= 0) {
-            return 0;
-        }
-        write(1, buf, (size_t)bytes);
+    int socket = 0;
+    int resultCode = createSocket(host, port, &socket);
+    if (resultCode != 0) {
+        printf("Error: unable to create socket, createSocket function finished with code %d\n", resultCode);
+        return 2;
     }
 
-    return 0;
+    char request[BUF_SIZE];
+    buildRequest(token, scope, request);
+
+    write(socket, request, strlen(request) +1);
+    while(1) {
+        char buf[BUF_SIZE];
+        char* response = "\0";
+        ssize_t bytes = read(socket, buf, BUF_SIZE);
+        if (bytes <= 0) {
+            printResponse(response);
+            return 0;
+        } else {
+            strcat(response, buf);
+        }
+    }
 }

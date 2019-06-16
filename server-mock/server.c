@@ -5,20 +5,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define EXIT_SUCCESS    0
-#define EXIT_SOCK_ERR   1
-#define EXIT_BIND_ERR   2
-#define EXIT_LISTEN_ERR 3
-#define EXIT_ACCEPT_ERR 4
-char* EXIT_MSG[] = {
-        "Function successfully finished",
-        "Error: unable to create socket",
-        "Error: unable to bind to socket",
-        "Error: unable to listen socket",
-        "Error: unable to accept TCP connection"
-};
+#include "server.h"
 
-bool server = true;
+char * buildResponse(const char* request, char* response) {
+    //TODO develop
+    response = strcpy(response, request);
+    return response;
+}
 
 int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
     struct sockaddr_in addrInfo; //Адрес для привязки к сокету
@@ -44,9 +37,30 @@ int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
         if (clientSocket<0) return EXIT_ACCEPT_ERR;
 
         //Читаем сообщение
-        char buf[msgSize];
-        read(clientSocket, buf, msgSize);
-        printf("%s\n", buf);
+        char buf[BUF_SIZE];
+        ssize_t bytes = read(clientSocket, buf, BUF_SIZE);
+        printf("Incoming message: %s/n",buf);
+        write(clientSocket, buf, (size_t)bytes);
+        /*ssize_t bytes = 0;
+        char buf[BUF_SIZE];
+        char* request = "\0";
+        do {
+            bytes = read(sock, buf, BUF_SIZE);
+            strcat(request, buf);
+        } while(bytes > 0);
+
+        //Составляем ответ
+        char* response = "\0";
+        response = buildResponse(request, response);
+
+        //Отправляем ответ клиенту
+        bytes = strlen(response);
+        int i = 0;
+        do {
+            strncat(buf, response + BUF_SIZE*i, BUF_SIZE);
+            i++;
+            bytes -= BUF_SIZE;
+        } while(bytes > 0);*/
 
         close(clientSocket);
     }
@@ -55,6 +69,6 @@ int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
 }
 
 int main() {
-    listenAndServe(5000, 4096, 10);
+    listenAndServe(PORT, BUF_SIZE, QUERY_LEN);
     return 0;
 }
