@@ -9,19 +9,33 @@
 
 #define BUF_SIZE 1024
 
-int createSocket(const char* host, const uint16_t port,  int *sock) {
+int getIpByHostname(const char *hostname, const char* port, char *ip) {
+    struct addrinfo hints, *serverInfo;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+
+    if (getaddrinfo(hostname, port, &hints, &serverInfo) != 0) {
+        return 1;
+    }
+
+    strcpy(ip, inet_ntoa(((struct sockaddr_in *) serverInfo->ai_addr)->sin_addr));
+
+    freeaddrinfo(serverInfo);
+    return 0;
+}
+
+int createSocket(const char* ip, const uint16_t port,  int *sock) {
     *sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Дескриптор сокета
     if (*sock < 0) {
         return 1;
     }
 
-    //TODO get ip by hostname
-
     struct sockaddr_in serverInfo; //Адрес сервера, к которому будем подключаться
     memset(&serverInfo, 0, sizeof(serverInfo));
     serverInfo.sin_family = AF_INET;
     serverInfo.sin_port   = htons(port);
-    int result = inet_aton(host, &serverInfo.sin_addr);
+    int result = inet_aton(ip, &serverInfo.sin_addr);
     if (result == 0) {
         return 3;
     }
@@ -33,6 +47,7 @@ int createSocket(const char* host, const uint16_t port,  int *sock) {
 
     return 0;
 }
+
 
 char* buildRequest(const char* token, const char* scope, char* request) {
     //TODO develop
@@ -58,11 +73,18 @@ int main(int argc, char* argv[]) {
     char*    token = argv[3];
     char*    scope = argv[4];
 
+    char ip[16];
+    int ipResolvingResult = getIpByHostname(host, argv[2], ip);
+    if (ipResolvingResult != 0) {
+        printf("Error: unable to resolve hostname to IPv4 address");
+        return 2;
+    }
+
     int socket = 0;
-    int resultCode = createSocket(host, port, &socket);
+    int resultCode = createSocket(ip, port, &socket);
     if (resultCode != 0) {
         printf("Error: unable to create socket, createSocket function finished with code %d\n", resultCode);
-        return 2;
+        return 3;
     }
 
     char request[BUF_SIZE];
