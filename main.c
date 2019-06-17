@@ -36,8 +36,7 @@ int createSocket(const char* host, const uint16_t port,  int *sock) {
 
 char* buildRequest(const char* token, const char* scope, char* request) {
     //TODO develop
-    *r
-    equest = '\0';
+    *request = '\0';
     request = strcat(request, token);
     request = strcat(request, scope);
     return request;
