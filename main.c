@@ -6,8 +6,8 @@
 #include <zconf.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
-
-#define BUF_SIZE 1024
+#include "include/cube_iproto.h"
+#include "include/const.h"
 
 int getIpByHostname(const char *hostname, const char* port, char *ip) {
     struct addrinfo hints, *serverInfo;
@@ -48,20 +48,9 @@ int createSocket(const char* ip, const uint16_t port,  int *sock) {
     return 0;
 }
 
-
-char* buildRequest(const char* token, const char* scope, char* request) {
-    //TODO develop
-    *request = '\0';
-    request = strcat(request, token);
-    request = strcat(request, scope);
-    return request;
-}
-
-char* parseResponse(char *response) {
-    //TODO develop
-    return response;
-}
-
+//TODO asserts and comments
+//TODO readme
+//TODO tests
 int main(int argc, char* argv[]) {
     if (argc != 5) {
         printf("Error: wrong number of arguments");

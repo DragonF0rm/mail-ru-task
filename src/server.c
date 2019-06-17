@@ -5,13 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "server.h"
-
-char * buildResponse(const char* request, char* response) {
-    //TODO develop
-    response = strcpy(response, request);
-    return response;
-}
+#include "../include/server.h"
 
 int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
     struct sockaddr_in addrInfo; //Адрес для привязки к сокету
