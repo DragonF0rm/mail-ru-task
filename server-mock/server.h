@@ -20,9 +20,8 @@ char* EXIT_MSG[] = {
         "Error: unable to accept TCP connection"
 };
 
-#define HOST      "localhost\0"
 #define PORT      5000
-#define BUF_SIZE  4096
+#define BUF_SIZE  1024
 #define QUERY_LEN 10
 
 int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen);

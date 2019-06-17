@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 
-#define BUF_SIZE 4096
+#define BUF_SIZE 1024
 
 int createSocket(const char* host, const uint16_t port,  int *sock) {
     *sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Дескриптор сокета
@@ -36,15 +36,16 @@ int createSocket(const char* host, const uint16_t port,  int *sock) {
 
 char* buildRequest(const char* token, const char* scope, char* request) {
     //TODO develop
-    *request = '\0';
+    *r
+    equest = '\0';
     request = strcat(request, token);
     request = strcat(request, scope);
     return request;
 }
 
-void printResponse(const char* response) {
+char* parseResponse(char *response) {
     //TODO develop
-    printf("%s\n", response);
+    return response;
 }
 
 int main(int argc, char* argv[]) {
@@ -67,17 +68,11 @@ int main(int argc, char* argv[]) {
 
     char request[BUF_SIZE];
     buildRequest(token, scope, request);
-
     write(socket, request, strlen(request) +1);
-    while(1) {
-        char buf[BUF_SIZE];
-        char* response = "\0";
-        ssize_t bytes = read(socket, buf, BUF_SIZE);
-        if (bytes <= 0) {
-            printResponse(response);
-            return 0;
-        } else {
-            strcat(response, buf);
-        }
-    }
+
+    char response[BUF_SIZE];
+    read(socket, response, port);
+    printf("%s\n", parseResponse(response));
+
+    return 0;
 }

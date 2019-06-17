@@ -37,30 +37,12 @@ int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
         if (clientSocket<0) return EXIT_ACCEPT_ERR;
 
         //Читаем сообщение
-        char buf[BUF_SIZE];
-        ssize_t bytes = read(clientSocket, buf, BUF_SIZE);
-        printf("Incoming message: %s/n",buf);
-        write(clientSocket, buf, (size_t)bytes);
-        /*ssize_t bytes = 0;
-        char buf[BUF_SIZE];
-        char* request = "\0";
-        do {
-            bytes = read(sock, buf, BUF_SIZE);
-            strcat(request, buf);
-        } while(bytes > 0);
+        char request[msgSize];
+        read(clientSocket, request, msgSize);
 
-        //Составляем ответ
-        char* response = "\0";
-        response = buildResponse(request, response);
-
-        //Отправляем ответ клиенту
-        bytes = strlen(response);
-        int i = 0;
-        do {
-            strncat(buf, response + BUF_SIZE*i, BUF_SIZE);
-            i++;
-            bytes -= BUF_SIZE;
-        } while(bytes > 0);*/
+        char response[BUF_SIZE];
+        buildResponse(request, response);
+        write(clientSocket, response, strlen(response) + 1);
 
         close(clientSocket);
     }
