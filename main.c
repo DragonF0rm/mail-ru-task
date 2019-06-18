@@ -48,7 +48,6 @@ int createSocket(const char* ip, const uint16_t port,  int *sock) {
     return 0;
 }
 
-//TODO asserts and comments
 //TODO readme
 //TODO tests
 int main(int argc, char* argv[]) {
@@ -82,7 +81,7 @@ int main(int argc, char* argv[]) {
 
     char response[BUF_SIZE];
     read(socket, response, port);
-    printf("%s\n", parseResponse(response));
+    printResponse(response);
 
     return 0;
 }
