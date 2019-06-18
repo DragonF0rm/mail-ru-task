@@ -7,8 +7,8 @@
 
 int main(int argc, char* argv[]) {
     if (argc != 5) {
-        printf("Error: wrong number of arguments");
-        printf("Program should be called like: cube <hostname> <port> <token> <scope>");
+        printf("Error: wrong number of arguments\n");
+        printf("Program should be called like: Cube <hostname> <port> <token> <scope>\n");
         return 1;
     }
     char*    host  = argv[1];
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
     char ip[16];
     int ipResolvingResult = getIpByHostname(host, argv[2], ip);
     if (ipResolvingResult != 0) {
-        printf("Error: unable to resolve hostname to IPv4 address");
+        printf("Error: unable to resolve hostname to IPv4 address\n");
         return 2;
     }
 

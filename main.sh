@@ -15,4 +15,6 @@ cmake ..
 make
 ctest ..
 
+export PATH=$PATH:${basePath}/tmp/bin
+
 cd ${currentDir}
