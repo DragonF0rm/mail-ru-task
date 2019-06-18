@@ -20,7 +20,7 @@
 void    buildCubeInt32(const int32_t num, char *result);
 int32_t parseCubeInt32(const char* src);
 void    buildCubeString(const char *src, char *dest);
-char*   parseCubeString(const char* src, char* dest);
+size_t  parseCubeString(const char* src, char* dest);
 void    cubePkgAppend(char* pkg, size_t shift, char* appendix, const size_t appendixLen);
 char*   buildRequest(const char* token, const char* scope, char* body);
 void    printResponse(const char *response);

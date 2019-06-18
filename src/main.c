@@ -5,9 +5,6 @@
 #include <zconf.h>
 #include "../include/client.h"
 
-//TODO readme
-//TODO tests
-//TODO main.sh
 int main(int argc, char* argv[]) {
     if (argc != 5) {
         printf("Error: wrong number of arguments");

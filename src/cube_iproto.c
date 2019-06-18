@@ -24,14 +24,15 @@ int32_t parseCubeInt32(const char* src) {
 void buildCubeString(const char *src, char *dest) {
     *dest = '0';
     char srcStrLen[SIZEOF_INT32];
-    buildCubeInt32((int32_t) strlen(src), srcStrLen);
+    buildCubeInt32((int32_t) strlen(src) + 1, srcStrLen);
     memcpy(dest, srcStrLen, SIZEOF_INT32);
-    memcpy(dest, src, strlen(src) + 1);
+    memcpy(dest + SIZEOF_INT32, src, strlen(src) + 1);
 }
 
-char* parseCubeString(const char* src, char* dest) {
-    dest = strcpy(dest, src);
-    return dest;
+size_t parseCubeString(const char* src, char* dest) {
+    int32_t strLen = parseCubeInt32(src);
+    dest = memcpy(dest, src + SIZEOF_INT32, (size_t)strLen);
+    return (size_t)strLen + SIZEOF_INT32;
 }
 
 void cubePkgAppend(char* pkg, size_t shift, char* appendix, const size_t appendixLen) {
@@ -89,32 +90,32 @@ void printResponse(const char *response) {
         switch (returnCode) {
             case CUBE_OAUTH2_ERR_TOKEN_NOT_FOUND: {
                 printf("error:CUBE_OAUTH2_ERR_TOKEN_NOT_FOUND\n");
-                printf("message:%s\n", body+SIZEOF_INT32);
+                printf("message:%s\n", body+2*SIZEOF_INT32);//1-ый int32 - return_code, 2-ой - длина строки
                 return;
             }
             case CUBE_OAUTH2_ERR_DB_ERROR: {
                 printf("error:CUBE_OAUTH2_ERR_DB_ERROR\n");
-                printf("message:%s\n", body+SIZEOF_INT32);
+                printf("message:%s\n", body+2*SIZEOF_INT32);
                 return;
             }
             case CUBE_OAUTH2_ERR_UNKNOWN_MSG: {
                 printf("error:CUBE_OAUTH2_ERR_UNKNOWN_MSG\n");
-                printf("message:%s\n", body+SIZEOF_INT32);
+                printf("message:%s\n", body+2*SIZEOF_INT32);
                 return;
             }
             case CUBE_OAUTH2_ERR_BAD_PACKET: {
                 printf("error:CUBE_OAUTH2_ERR_BAD_PACKET\n");
-                printf("message:%s\n", body+SIZEOF_INT32);
+                printf("message:%s\n", body+2*SIZEOF_INT32);
                 return;
             }
             case CUBE_OAUTH2_ERR_BAD_CLIENT: {
                 printf("error:CUBE_OAUTH2_ERR_BAD_CLIENT\n");
-                printf("message:%s\n", body+SIZEOF_INT32);
+                printf("message:%s\n", body+2*SIZEOF_INT32);
                 return;
             }
             case CUBE_OAUTH2_ERR_BAD_SCOPE: {
                 printf("error:CUBE_OAUTH2_ERR_BAD_SCOPE\n");
-                printf("message:%s\n", body+SIZEOF_INT32);
+                printf("message:%s\n", body+2*SIZEOF_INT32);
                 return;
             }
             default: {
@@ -125,8 +126,7 @@ void printResponse(const char *response) {
     }
 
     char* stringBuf = malloc((size_t)bodyLen - 2*SIZEOF_INT32);
-    stringBuf = parseCubeString(body + SIZEOF_INT32, stringBuf);// stringBuf ::= <client_id>
-    size_t clientIdLen = strlen(stringBuf);
+    size_t clientIdLen = parseCubeString(body + SIZEOF_INT32, stringBuf);// stringBuf ::= <client_id>
     printf("client_id: %s\n", stringBuf);
 
     int32_t clientType = parseCubeInt32(body + SIZEOF_INT32 + clientIdLen);
@@ -135,7 +135,7 @@ void printResponse(const char *response) {
     int32_t expiresIn = parseCubeInt32(body + bodyLen - SIZEOF_INT32);
     printf("expires_in: %d\n", expiresIn);
 
-    stringBuf = parseCubeString(body + 2*SIZEOF_INT32 +clientIdLen, stringBuf);// stringBuf ::= <username>
+    parseCubeString(body + 2*SIZEOF_INT32 +clientIdLen, stringBuf);// stringBuf ::= <username>
     printf("username: %s\n", stringBuf);
 
     free(stringBuf);

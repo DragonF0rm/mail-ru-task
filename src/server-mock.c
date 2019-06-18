@@ -35,7 +35,6 @@ int listenAndServeOnce(uint16_t port, uint16_t msgSize, uint8_t queueLen, char* 
         char request[msgSize];
         read(clientSocket, request, msgSize);
         write(clientSocket, response, responseLen);
-
         close(clientSocket);
     }
 
