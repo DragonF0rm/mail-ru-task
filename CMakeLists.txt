@@ -15,6 +15,7 @@ add_executable(Test4 test/test_buildCubeString.c src/cube_iproto.c include/cube_
 add_executable(Test5 test/test_parseCubeInt32.c src/cube_iproto.c include/cube_iproto.h)
 add_executable(Test6 test/test_parseCubeString.c src/cube_iproto.c include/cube_iproto.h)
 add_executable(Test7 test/test_buildRequest.c src/cube_iproto.c include/cube_iproto.h)
+add_executable(Test8 test/test_printResponseErrDbError.c src/cube_iproto.c include/cube_iproto.h)
 
 target_link_libraries(Test1 ${CMAKE_THREAD_LIBS_INIT} )
 target_link_libraries(Test2 ${CMAKE_THREAD_LIBS_INIT} )
@@ -28,5 +29,9 @@ add_test(TestBuildCubeString bin/Test4)
 add_test(TestParseCubeInt32 bin/Test5)
 add_test(TestParseCubeString bin/Test6)
 add_test(TestBuildRequest bin/Test7)
+add_test(TestPrintResponseErrDbError bin/Test8)
+
+set_tests_properties(TestPrintResponseErrDbError PROPERTIES
+        PASS_REGULAR_EXPRESSION "error:CUBE_OAUTH2_ERR_DB_ERROR")
 
 

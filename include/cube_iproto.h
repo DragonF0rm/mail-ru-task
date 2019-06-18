@@ -2,6 +2,7 @@
 #define CUBE_CUBE_PROTO_H
 
 #include <stdint-gcc.h>
+
 #include "const.h"
 
 #define CUBE_OAUTH2_ERR_OK              0x00000000

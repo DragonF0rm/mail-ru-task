@@ -76,7 +76,7 @@ char* buildRequest(const char* token, const char* scope, char* request) {
 void printResponse(const char *response) {
     int32_t svcId = parseCubeInt32(response);
     if(svcId != CUBE_OAUTH2_SVC_ID) {
-        printf("%s\n", "Error: response contains wrong service id");
+        printf("%s\n", "Error: response contains wrong service id\n");
         return;
     }
 
