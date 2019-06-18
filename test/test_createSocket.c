@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <zconf.h>
-#include "../include/test.h"
+#include "../include/client.h"
+#include "../include/server-mock.h"
 
 int main() {
     //Будем считать, что функция createSocket работает верно,

@@ -8,8 +8,9 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 add_executable(Cube src/main.c src/client.c include/client.h src/cube_iproto.c include/cube_iproto.h)
 
-add_executable(Test1 test/test_getIpByHostname.c include/test.h src/server-mock.c include/server-mock.h src/client.c include/client.h)
-add_executable(Test2 test/test_createSocket.c include/test.h src/server-mock.c include/server-mock.h src/client.c include/client.h)
+add_executable(Test1 test/test_getIpByHostname.c src/server-mock.c include/server-mock.h src/client.c include/client.h)
+add_executable(Test2 test/test_createSocket.c src/server-mock.c include/server-mock.h src/client.c include/client.h)
+add_executable(Test3 test/test_buildCubeInt32.c src/cube_iproto.c include/cube_iproto.h)
 
 target_link_libraries(Test1 ${CMAKE_THREAD_LIBS_INIT} )
 target_link_libraries(Test2 ${CMAKE_THREAD_LIBS_INIT} )
@@ -18,3 +19,4 @@ enable_testing()
 
 add_test(Test1 bin/Test1)
 add_test(Test2 bin/Test2)
+add_test(Test3 bin/Test3)

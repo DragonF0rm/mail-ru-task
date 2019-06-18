@@ -1,6 +1,7 @@
 #include <memory.h>
 #include <stdio.h>
-#include "../include/test.h"
+#include "../include/client.h"
+#include "../include/server-mock.h"
 
 int main() {
     char ip[16];
