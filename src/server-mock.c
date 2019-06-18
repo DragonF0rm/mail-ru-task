@@ -4,10 +4,11 @@
 #include <zconf.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <pthread.h>
 
-#include "../include/server.h"
+#include "../include/server-mock.h"
 
-int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
+int listenAndServeOnce(uint16_t port, uint16_t msgSize, uint8_t queueLen, char* response, size_t responseLen) {
     struct sockaddr_in addrInfo; //Адрес для привязки к сокету
     memset(&addrInfo, 0, sizeof(addrInfo));
     addrInfo.sin_family      = AF_INET;
@@ -33,10 +34,7 @@ int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
         //Читаем сообщение
         char request[msgSize];
         read(clientSocket, request, msgSize);
-
-        char response[BUF_SIZE];
-        buildResponse(request, response);
-        write(clientSocket, response, strlen(response) + 1);
+        write(clientSocket, response, responseLen);
 
         close(clientSocket);
     }
@@ -44,7 +42,19 @@ int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen) {
     return EXIT_SUCCESS;
 }
 
-int main() {
-    listenAndServe(PORT, BUF_SIZE, QUERY_LEN);
+void* startServer(void* args) {
+    struct serveArgs* typedArgs = args;
+    listenAndServeOnce(PORT, BUF_SIZE, QUERY_LEN, typedArgs->response, typedArgs->responseLen);
+    return NULL;
+}
+
+void* startNewThreadServer(struct serveArgs * args) {
+    pthread_t thread;
+    int status = pthread_create(&thread, NULL, startServer, args);
+    if (status !=0) {
+        return (void*)EXIT_THREAD_ERR;
+    }
+
     return 0;
 }
+

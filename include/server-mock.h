@@ -10,17 +10,17 @@
 #define EXIT_BIND_ERR   2
 #define EXIT_LISTEN_ERR 3
 #define EXIT_ACCEPT_ERR 4
-char* EXIT_MSG[] = {
-        "Function successfully finished",
-        "Error: unable to create socket",
-        "Error: unable to bind to socket",
-        "Error: unable to listen socket",
-        "Error: unable to accept TCP connection"
-};
+#define EXIT_THREAD_ERR 5
 
 #define PORT      5000
+#define PORT_STR  "5000"
 #define QUERY_LEN 10
 
-int listenAndServe(uint16_t port, uint16_t msgSize, uint8_t queueLen);
+struct serveArgs {
+    size_t responseLen;
+    char* response;
+};
+
+void* startNewThreadServer(struct serveArgs * args);
 
 #endif //CUBE_SERVER_H

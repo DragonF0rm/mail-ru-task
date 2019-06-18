@@ -30,7 +30,7 @@ void buildCubeString(const char *src, char *dest) {
 }
 
 char* parseCubeString(const char* src, char* dest) {
-    dest = strcpy(src, dest);
+    dest = strcpy(dest, src);
     return dest;
 }
 
@@ -72,12 +72,6 @@ char* buildRequest(const char* token, const char* scope, char* request) {
     memcpy(body, request + 2*SIZEOF_INT32, (size_t)bodyLen);
 
     return request;
-}
-
-char* buildResponse(const char* request, char* response) {
-    //TODO develop
-    response = strcpy(response, request);
-    return response;
 }
 
 void printResponse(const char *response) {
