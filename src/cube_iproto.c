@@ -35,31 +35,29 @@ size_t parseCubeString(const char* src, char* dest) {
     return (size_t)strLen + SIZEOF_INT32;
 }
 
-void cubePkgAppend(char* pkg, size_t shift, char* appendix, const size_t appendixLen) {
-    memcpy(pkg+shift, appendix, appendixLen);
-    shift += appendixLen;
+void cubePkgAppend(char* pkg, size_t* shift, char* appendix, const size_t appendixLen) {
+    memcpy(pkg+(*shift), appendix, appendixLen);
+    *shift += appendixLen;
 }
 
 char* buildRequest(const char* token, const char* scope, char* request) {
     char body[BUF_SIZE - 2*SIZEOF_INT32];// Максимальный возможный размер body из заднного API по бнф
     size_t shift = 0;// Текущее смещение в массиве байт body
-    char svcMsg[SIZEOF_INT32];
-    buildCubeInt32(CUBE_OAUTH2_SVC_MSG, svcMsg);
-    memcpy(body, svcMsg, SIZEOF_INT32);
+    buildCubeInt32(CUBE_OAUTH2_SVC_MSG, body);
     shift = SIZEOF_INT32;
 
     size_t cubeTokenLen = strlen(token)+SIZEOF_INT32+1;// 4 доп. байта на длину токена и 1 на \0
     char* cubeToken = malloc(cubeTokenLen);
     assert(cubeToken != NULL);
     buildCubeString(token, cubeToken);
-    cubePkgAppend(body, shift, cubeToken, cubeTokenLen);
+    cubePkgAppend(body, &shift, cubeToken, cubeTokenLen);
     free(cubeToken);
 
     size_t cubeScopeLen = strlen(scope)+SIZEOF_INT32+1;// 4 доп. байта на длину scope и 1 на \0
     char* cubeScope = malloc(cubeScopeLen);
     assert(cubeScope != NULL);
     buildCubeString(scope, cubeScope);
-    cubePkgAppend(body, shift, cubeScope, cubeScopeLen);
+    cubePkgAppend(body, &shift, cubeScope, cubeScopeLen);
     free(cubeScope);
 
     char header[2*SIZEOF_INT32];
@@ -69,8 +67,8 @@ char* buildRequest(const char* token, const char* scope, char* request) {
     int32_t bodyLen = (int32_t)shift;
     buildCubeInt32(bodyLen, header + SIZEOF_INT32);
 
-    memcpy(header, request, 2*SIZEOF_INT32);
-    memcpy(body, request + 2*SIZEOF_INT32, (size_t)bodyLen);
+    memcpy(request, header, 2*SIZEOF_INT32);
+    memcpy(request + 2*SIZEOF_INT32, body, (size_t)bodyLen);
 
     return request;
 }
